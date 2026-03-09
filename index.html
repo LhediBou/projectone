@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHERLOG.OS | Admin Dashboard</title>
+    <meta name="description" content="Professional data monitoring interface - MVP Submission">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo">SHERLOG<span>.OS</span></span>
+                <button id="close-sidebar" class="mobile-only">✕</button>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#dashboard">Overview</a></li>
+                <li><a href="#stats">Analytics</a></li>
+                <li><a href="#history">Audit Logs</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="status-badge">
+                    <span class="pulse-dot"></span>
+                    SYNC: ACTIVE
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <button id="open-sidebar" class="mobile-only">☰</button>
+                <div class="header-text">
+                    <h1>System Dashboard</h1>
+                    <p class="description">Consolidated view of system performance and data synchronization status.</p>
+                </div>
+                <div class="header-actions">
+                    <button id="refresh-btn" class="btn btn-primary">Refresh Data</button>
+                </div>
+            </header>
+
+            <!-- Loading State -->
+            <div id="loading-overlay" class="state-overlay hidden">
+                <div class="loader"></div>
+                <p>Updating dataset...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-message" class="state-message error hidden">
+                <p id="error-text">⚠️ Service unavailable. System is at peak capacity or connection lost.</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <section class="kpi-grid">
+                <div class="card kpi-card">
+                    <div class="card-label">Total Records <span class="badge-demo">Demo</span></div>
+                    <div class="card-value" id="kpi-total">0</div>
+                    <div class="card-footer">Last 24 hours</div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="card-label">Refresh Time <span class="badge-demo">Demo</span></div>
+                    <div class="card-value" id="kpi-load">0 ms</div>
+                    <div class="card-footer" id="kpi-load-trend">Stable</div>
+                </div>
+                <div class="card kpi-card">
+                    <div class="card-label">Top Category <span class="badge-demo">Demo</span></div>
+                    <div class="card-value small" id="kpi-category">N/A</div>
+                    <div class="card-footer">Most active module</div>
+                </div>
+            </section>
+
+            <!-- Chart & Health -->
+            <section class="visuals-grid">
+                <div class="card chart-area">
+                    <div class="card-header">
+                        <h3>Volume Trend</h3>
+                        <span class="badge-demo">Demo Data</span>
+                    </div>
+                    <div class="chart-box" id="chart-bars">
+                        <!-- Bars via JS -->
+                    </div>
+                </div>
+                <div class="card status-list">
+                    <div class="card-header">
+                        <h3>Module Status</h3>
+                    </div>
+                    <ul id="module-status-container">
+                        <!-- Items via JS -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Data Table -->
+            <section class="table-area card">
+                <div class="card-header">
+                    <h3>Recent Operations</h3>
+                    <div class="last-refresh">Last update: <span id="last-refresh-time">Never</span></div>
+                </div>
+                <div class="table-container">
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Timestamp</th>
+                                <th>Component</th>
+                                <th>Metric</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Empty State -->
+                <div id="empty-state" class="state-message hidden">
+                    <p>No records found in current batch.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
