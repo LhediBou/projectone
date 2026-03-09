@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 trend: Array.from({ length: 12 }, () => Math.floor(Math.random() * 80) + 10),
                 records: rawData.map(item => ({
                     id: item.incident_id,
-                    time: new Date(item.start_time).toLocaleTimeString('en-US', { hour12: false }),
+                    time: formatTwoLineDate(item.start_time),
                     module: "POLICE DISPATCH",
                     action: item.initial_type,
                     status: item.priority === "1" ? "CRITICAL" : (item.priority === "2" ? "HIGH" : "NORMAL")
@@ -109,6 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const formatTwoLineDate = (dateInput) => {
+        const d = new Date(dateInput);
+        const time = d.toLocaleTimeString('en-US', { hour12: false });
+        const day = String(d.getDate()).padStart(2, '0');
+        const months = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juill.", "août", "sept.", "oct.", "nov.", "déc."];
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        return `<div class="time-part">${time}</div><div class="date-part">${day}/${month}/${year}</div>`;
+    };
+
     const handleRefresh = async () => {
         const startTime = performance.now();
         elements.loading.classList.remove('hidden');
@@ -121,6 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const duration = Math.round(performance.now() - startTime);
             elements.loadKpi.textContent = `${duration} ms`;
             elements.loadTrend.textContent = 'Live Uplink: Active';
+            
+            elements.refreshTime.innerHTML = formatTwoLineDate(new Date());
 
         } catch (err) {
             console.error(err);
