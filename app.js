@@ -27,6 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
         statuses: ["Completed", "Processing", "Warning"]
     };
 
+    // UTILITIES
+    const formatTwoLineDate = (dateInput) => {
+        const d = new Date(dateInput);
+        const time = d.toLocaleTimeString('en-US', { hour12: false });
+        const day = String(d.getDate()).padStart(2, '0');
+        const months = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juill.", "août", "sept.", "oct.", "nov.", "déc."];
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        const femto = Math.floor(Math.random() * 899999999) + 100000000;
+        return `<div class="time-part">${time}<span class="femto">.${femto}</span></div><div class="date-part">${day}/${month}/${year}</div>`;
+    };
+
     // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY POLICE DISPATCH)
     const fetchData = async () => {
         const API_URL = "https://data.montgomerycountymd.gov/resource/98cc-bc7d.json?$limit=15&$order=start_time DESC";
@@ -94,7 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.records.length === 0) {
             elements.empty.classList.remove('hidden');
         } else {
-                const priority = r.status; // Using the mapped status as priority label
+            data.records.forEach(r => {
+                const tr = document.createElement('tr');
+                const priority = r.status;
                 const statusClass = priority === 'CRITICAL' ? 'tag-danger' : 
                                    (priority === 'HIGH' ? 'tag-warning' : 'tag-success');
                 tr.innerHTML = `
@@ -107,16 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.tableBody.appendChild(tr);
             });
         }
-    };
-
-    const formatTwoLineDate = (dateInput) => {
-        const d = new Date(dateInput);
-        const time = d.toLocaleTimeString('en-US', { hour12: false });
-        const day = String(d.getDate()).padStart(2, '0');
-        const months = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juill.", "août", "sept.", "oct.", "nov.", "déc."];
-        const month = months[d.getMonth()];
-        const year = d.getFullYear();
-        return `<div class="time-part">${time}</div><div class="date-part">${day}/${month}/${year}</div>`;
     };
 
     const handleRefresh = async () => {
@@ -132,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.loadKpi.textContent = `${duration} ms`;
             elements.loadTrend.textContent = 'Live Uplink: Active';
             
-            elements.refreshTime.innerHTML = formatTwoLineDate(new Date());
+            elements.lastRefresh.innerHTML = formatTwoLineDate(new Date());
 
         } catch (err) {
             console.error(err);
