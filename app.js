@@ -94,16 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.records.length === 0) {
             elements.empty.classList.remove('hidden');
         } else {
-            data.records.forEach(r => {
-                const tr = document.createElement('tr');
-                const statusClass = r.status === 'CRITICAL' ? 'tag-danger' : 
-                                   (r.status === 'HIGH' ? 'tag-warning' : 'tag-success');
+                const priority = r.status; // Using the mapped status as priority label
+                const statusClass = priority === 'CRITICAL' ? 'tag-danger' : 
+                                   (priority === 'HIGH' ? 'tag-warning' : 'tag-success');
                 tr.innerHTML = `
                     <td>#${r.id}</td>
                     <td>${r.time}</td>
                     <td>${r.module}</td>
                     <td>${r.action}</td>
-                    <td><span class="status-tag ${statusClass}">${r.status}</span></td>
+                    <td><span class="status-tag ${statusClass}">${priority}</span></td>
                 `;
                 elements.tableBody.appendChild(tr);
             });
