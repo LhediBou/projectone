@@ -27,51 +27,47 @@ document.addEventListener('DOMContentLoaded', () => {
         statuses: ["Completed", "Processing", "Warning"]
     };
 
-    // CORE LOGIC: DATA FETCHING (SIMULATED)
-    const fetchData = () => {
-        return new Promise((resolve, reject) => {
-            // Simulate network delay
-            setTimeout(() => {
-                // Occasional error simulation (5% chance)
-                const rand = Math.random();
-                if (rand < 0.03) {
-                    reject("Connection Error");
-                } else if (rand < 0.05) {
-                    reject("Service Error");
-                } else {
-                    const recordCount = 10 + Math.floor(Math.random() * 5); // 10 to 15 records
-                    const data = {
-                        kpis: {
-                            total: 12400 + Math.floor(Math.random() * 1000),
-                            category: MOCK_DATA.categories[Math.floor(Math.random() * MOCK_DATA.categories.length)]
-                        },
-                        trend: Array.from({ length: 12 }, () => Math.floor(Math.random() * 100) + 10),
-                        records: Array.from({ length: recordCount }, (_, i) => ({
-                            id: `00${2400 + i}`,
-                            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
-                            module: MOCK_DATA.modules[Math.floor(Math.random() * MOCK_DATA.modules.length)],
-                            action: MOCK_DATA.actions[Math.floor(Math.random() * MOCK_DATA.actions.length)],
-                            status: MOCK_DATA.statuses[Math.floor(Math.random() * MOCK_DATA.statuses.length)]
-                        }))
-                    };
-                    resolve(data);
-                }
-            }, 600);
-        });
+    // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY COUNTY MC311)
+    const fetchData = async () => {
+        const API_URL = "https://data.montgomerycountymd.gov/resource/jrcn-in39.json?$limit=15&$order=created DESC";
+        
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            const rawData = await response.json();
+
+            // Transform MC311 data into Dashboard format
+            return {
+                kpis: {
+                    total: rawData.length, // Shown as current batch
+                    category: rawData[0]?.sr_area || "N/A"
+                },
+                trend: Array.from({ length: 12 }, () => Math.floor(Math.random() * 60) + 20),
+                records: rawData.map(item => ({
+                    id: item.sr_num,
+                    time: new Date(item.created).toLocaleTimeString('en-US', { hour12: false }),
+                    module: item.department,
+                    action: item.sr_area,
+                    status: item.sr_stat_id
+                }))
+            };
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            throw error;
+        }
     };
 
     // UI RENDERERS
     const renderUI = (data) => {
-        // Hide states
         elements.error.classList.add('hidden');
         elements.empty.classList.add('hidden');
 
-        // Update KPIs (duration updated in handleRefresh)
-        elements.totalKpi.textContent = data.kpis.total.toLocaleString();
+        // Update KPIs
+        elements.totalKpi.textContent = data.kpis.total;
         elements.categoryKpi.textContent = data.kpis.category;
         elements.lastRefresh.textContent = new Date().toLocaleTimeString();
 
-        // Render Chart
+        // Render Chart (Simulated load pattern for now)
         elements.chartBars.innerHTML = '';
         data.trend.forEach(val => {
             const bar = document.createElement('div');
@@ -80,15 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.chartBars.appendChild(bar);
         });
 
-        // Render Module Status (Static logic + mock data)
+        // Update Module Status (Dynamic based on departments in feed)
         elements.moduleStatuses.innerHTML = '';
-        MOCK_DATA.modules.forEach(m => {
+        const uniqueDepts = [...new Set(data.records.map(r => r.module))].slice(0, 5);
+        uniqueDepts.forEach(dept => {
             const li = document.createElement('li');
             li.style.display = 'flex';
             li.style.justifyContent = 'space-between';
             li.style.padding = '8px 0';
             li.style.borderBottom = '1px solid var(--border)';
-            li.innerHTML = `<span>${m}</span> <span class="status-tag tag-success">Online</span>`;
+            li.innerHTML = `<span>${dept}</span> <span class="status-tag tag-success">Active</span>`;
             elements.moduleStatuses.appendChild(li);
         });
 
@@ -104,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${r.time}</td>
                     <td>${r.module}</td>
                     <td>${r.action}</td>
-                    <td><span class="status-tag ${r.status === 'Completed' ? 'tag-success' : 'tag-warning'}">${r.status}</span></td>
+                    <td><span class="status-tag ${r.status === 'Closed' ? 'tag-success' : 'tag-warning'}">${r.status}</span></td>
                 `;
                 elements.tableBody.appendChild(tr);
             });
@@ -120,19 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await fetchData();
             renderUI(data);
 
-            // Calculate real duration
             const duration = Math.round(performance.now() - startTime);
             elements.loadKpi.textContent = `${duration} ms`;
-            elements.loadTrend.textContent = duration > 1000 ? 'Delayed' : 'Optimal performance';
+            elements.loadTrend.textContent = 'Live Uplink: Active';
 
         } catch (err) {
             console.error(err);
             const errorText = document.getElementById('error-text');
-            if (err === "Service Error") {
-                errorText.textContent = "⚠️ Service temporarily unavailable. Retrying sync in 30s...";
-            } else {
-                errorText.textContent = "⚠️ Connection interrupted. Please check network status.";
-            }
+            errorText.textContent = "⚠️ Data link interrupted. Verify Socrata endpoint.";
             elements.error.classList.remove('hidden');
         } finally {
             elements.loading.classList.add('hidden');
