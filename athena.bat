@@ -1,3 +1,3 @@
 @echo off
-powershell -ExecutionPolicy Bypass -File "%~dp0sherlog.ps1"
+powershell.exe -ExecutionPolicy Bypass -File "Sherlog_ChatGPT.ps1"
 pause
