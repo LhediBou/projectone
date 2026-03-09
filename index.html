@@ -26,9 +26,8 @@
                 <button id="close-sidebar" class="mobile-only">✕</button>
             </div>
             <ul class="nav-links">
-                <li class="active"><a href="#dashboard">Overview</a></li>
-                <li><a href="#stats">Analytics</a></li>
-                <li><a href="#history">Audit Logs</a></li>
+                <li class="active" id="nav-dashboard"><a href="#dashboard">Overview</a></li>
+                <li id="nav-brief"><a href="#brief">Project Brief</a></li>
             </ul>
             <div class="sidebar-footer">
                 <div class="status-badge">
@@ -102,31 +101,68 @@
                 </div>
             </section>
 
-            <!-- Data Table -->
-            <section class="table-area card">
-                <div class="card-header">
-                    <h3>Recent Operations</h3>
-                    <div class="last-refresh">Last update: <span id="last-refresh-time">Never</span></div>
-                </div>
-                <div class="table-container">
-                    <table id="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Timestamp</th>
-                                <th>Component</th>
-                                <th>Metric</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-                            <!-- Rows via JS -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Empty State -->
-                <div id="empty-state" class="state-message hidden">
-                    <p>No records found in current batch.</p>
+            <!-- Data Table (Dashboard View) -->
+            <section id="dashboard-view">
+                <section class="table-area card">
+                    <div class="card-header">
+                        <h3>Recent Operations</h3>
+                        <div class="last-refresh">Last update: <span id="last-refresh-time">Never</span></div>
+                    </div>
+                    <div class="table-container">
+                        <table id="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Component</th>
+                                    <th>Metric</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Rows via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Empty State -->
+                    <div id="empty-state" class="state-message hidden">
+                        <p>No records found in current batch.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Project Brief View (Narrative Layer) -->
+            <section id="brief-view" class="hidden">
+                <div class="brief-grid">
+                    <div class="card brief-card">
+                        <div class="card-header"><h3>Problem</h3></div>
+                        <p>Cities generate valuable public signals, but they are often fragmented and difficult to interpret quickly.</p>
+                    </div>
+                    <div class="card brief-card">
+                        <div class="card-header"><h3>Solution</h3></div>
+                        <p>ProjectOne turns operational public data into a clear dashboard with KPIs, trends, and recent activity for faster situational awareness.</p>
+                    </div>
+                    <div class="card brief-card highlight-card">
+                        <div class="card-header"><h3>Social Impact</h3></div>
+                        <p><strong>Social impact is the heart of the project.</strong> It follows an <strong>AI+H approach</strong> — AI for Humans, with Humans — where technology supports people instead of replacing them.</p>
+                    </div>
+                    <div class="card brief-card">
+                        <div class="card-header"><h3>City Story Layer</h3></div>
+                        <p>The platform is not only a monitoring tool. It is also a window into the living story of a city, revealing its rhythms, pressures, and needs through public data.</p>
+                    </div>
+                    <div class="card brief-card">
+                        <div class="card-header"><h3>Business Potential</h3></div>
+                        <p>ProjectOne can evolve into a lightweight municipal intelligence platform for operational awareness, service monitoring, and multi-city public data integration.</p>
+                    </div>
+                    <div class="card brief-card contact-card">
+                        <div class="card-header"><h3>Contact</h3></div>
+                        <div class="contact-info">
+                            <p><strong>John Doe</strong></p>
+                            <p>Project Lead</p>
+                            <p>Business Inquiries</p>
+                            <p class="email">cityops@projectone.demo</p>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>

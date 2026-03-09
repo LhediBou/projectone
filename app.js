@@ -132,12 +132,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // EVENT LISTENERS
-    elements.refreshBtn.addEventListener('click', handleRefresh);
+    // NAVIGATION LOGIC
+    const dashboardView = document.getElementById('dashboard-view');
+    const briefView = document.getElementById('brief-view');
+    const navDashboard = document.getElementById('nav-dashboard');
+    const navBrief = document.getElementById('nav-brief');
+    const kpiSection = document.querySelector('.kpi-grid');
+    const visualSection = document.querySelector('.visuals-grid');
 
-    // Sidebar Mobile Toggle
-    elements.openSidebar.addEventListener('click', () => elements.sidebar.classList.add('open'));
-    elements.closeSidebar.addEventListener('click', () => elements.sidebar.classList.remove('open'));
+    const switchView = (target) => {
+        if (target === 'dashboard') {
+            dashboardView.classList.remove('hidden');
+            kpiSection.classList.remove('hidden');
+            visualSection.classList.remove('hidden');
+            briefView.classList.add('hidden');
+            navDashboard.classList.add('active');
+            navBrief.classList.remove('active');
+        } else {
+            dashboardView.classList.add('hidden');
+            kpiSection.classList.add('hidden');
+            visualSection.classList.add('hidden');
+            briefView.classList.remove('hidden');
+            navDashboard.classList.remove('active');
+            navBrief.classList.add('active');
+        }
+        // Always close sidebar on mobile after click
+        elements.sidebar.classList.remove('open');
+    };
+
+    navDashboard.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView('dashboard');
+    });
+
+    navBrief.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchView('brief');
+    });
 
     // INITIAL LOAD
     handleRefresh();
