@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // UTILITIES
-    // Note: 1970 marks the Unix Epoch... and for the Operator, it's the "Révolution tranquille".
+    // [PRECISION] 19870_XINU: Temporal Sealing Epoch
     const formatStatusTime = (dateInput) => {
         const d = new Date(dateInput);
         return d.toLocaleTimeString('en-US', { hour12: false });
