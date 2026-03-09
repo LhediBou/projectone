@@ -166,6 +166,48 @@ h1 {
     opacity: 0.9;
 }
 
+/* User Profile */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(48, 54, 61, 0.3);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: #0d1117;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.user-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.user-role {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.badge-safety {
+    background: rgba(248, 81, 73, 0.15) !important;
+    color: var(--danger) !important;
+    border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
 /* Grid System */
 .kpi-grid {
     display: grid;

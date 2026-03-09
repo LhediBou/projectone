@@ -27,28 +27,28 @@ document.addEventListener('DOMContentLoaded', () => {
         statuses: ["Completed", "Processing", "Warning"]
     };
 
-    // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY COUNTY MC311)
+    // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY POLICE DISPATCH)
     const fetchData = async () => {
-        const API_URL = "https://data.montgomerycountymd.gov/resource/jrcn-in39.json?$limit=15&$order=created DESC";
+        const API_URL = "https://data.montgomerycountymd.gov/resource/98cc-bc7d.json?$limit=15&$order=start_time DESC";
         
         try {
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             const rawData = await response.json();
 
-            // Transform MC311 data into Dashboard format
+            // Transform Police Data into Dashboard format
             return {
                 kpis: {
-                    total: rawData.length, // Shown as current batch
-                    category: rawData[0]?.sr_area || "N/A"
+                    total: rawData.length,
+                    category: rawData[0]?.initial_type || "N/A"
                 },
-                trend: Array.from({ length: 12 }, () => Math.floor(Math.random() * 60) + 20),
+                trend: Array.from({ length: 12 }, () => Math.floor(Math.random() * 80) + 10),
                 records: rawData.map(item => ({
-                    id: item.sr_num,
-                    time: new Date(item.created).toLocaleTimeString('en-US', { hour12: false }),
-                    module: item.department,
-                    action: item.sr_area,
-                    status: item.sr_stat_id
+                    id: item.incident_id,
+                    time: new Date(item.start_time).toLocaleTimeString('en-US', { hour12: false }),
+                    module: "POLICE DISPATCH",
+                    action: item.initial_type,
+                    status: item.priority === "1" ? "CRITICAL" : (item.priority === "2" ? "HIGH" : "NORMAL")
                 }))
             };
         } catch (error) {
@@ -96,12 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             data.records.forEach(r => {
                 const tr = document.createElement('tr');
+                const statusClass = r.status === 'CRITICAL' ? 'tag-danger' : 
+                                   (r.status === 'HIGH' ? 'tag-warning' : 'tag-success');
                 tr.innerHTML = `
-                    <td>${r.id}</td>
+                    <td>#${r.id}</td>
                     <td>${r.time}</td>
                     <td>${r.module}</td>
                     <td>${r.action}</td>
-                    <td><span class="status-tag ${r.status === 'Closed' ? 'tag-success' : 'tag-warning'}">${r.status}</span></td>
+                    <td><span class="status-tag ${statusClass}">${r.status}</span></td>
                 `;
                 elements.tableBody.appendChild(tr);
             });
