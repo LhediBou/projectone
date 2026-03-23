@@ -1,5 +1,4 @@
 {
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/aether/index.html" },
     { "source": "/aether", "destination": "/aether/index.html" },
