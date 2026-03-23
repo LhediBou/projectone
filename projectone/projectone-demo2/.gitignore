@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Project-specific internal files
+*.log
+*.bak
+# Keeping sherlog.ps1 and athena.bat as part of the demo CLI setup

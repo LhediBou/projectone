@@ -1,0 +1,9 @@
+ffmpeg_temp/
+ffmpeg.zip
+*.mp4
+*.webp
+node_modules/
+.DS_Store
+.vscode/
+.idea/
+*.log

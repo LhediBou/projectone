@@ -1,0 +1,59 @@
+Trajectory ID: 34fe1e17-235e-4941-9db9-4b22dc101e82
+Error: HTTP 503 Service Unavailable
+Sherlog: 
+TraceID: 0x71447d931cb96ab3
+Headers: {
+    "Alt-Svc": [
+        "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+    ],
+    "Content-Length": [
+        "409"
+    ],
+    "Content-Type": [
+        "text/event-stream"
+    ],
+    "Date": [
+        "Mon, 09 Mar 2026 14:36:59 GMT"
+    ],
+    "Server": [
+        "ESF"
+    ],
+    "Server-Timing": [
+        "gfet4t7; dur=1956"
+    ],
+    "Vary": [
+        "Origin",
+        "X-Origin",
+        "Referer"
+    ],
+    "X-Cloudaicompanion-Trace-Id": [
+        "71447d931cb96ab3"
+    ],
+    "X-Content-Type-Options": [
+        "nosniff"
+    ],
+    "X-Frame-Options": [
+        "SAMEORIGIN"
+    ],
+    "X-Xss-Protection": [
+        "0"
+    ]
+}
+
+{
+    "error": {
+        "code": 503,
+        "details": [
+            {
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "domain": "cloudcode-pa.googleapis.com",
+                "metadata": {
+                    "model": "gemini-3-flash"
+                },
+                "reason": "MODEL_CAPACITY_EXHAUSTED"
+            }
+        ],
+        "message": "No capacity available for model gemini-3-flash on the server",
+        "status": "UNAVAILABLE"
+    }
+}
