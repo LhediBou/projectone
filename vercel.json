@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/aether/index.html" },
+    { "source": "/aether", "destination": "/aether/index.html" },
+    { "source": "/projectone", "destination": "/projectone/projectone-demo2/index.html" },
+    { "source": "/projectone/(.*)", "destination": "/projectone/projectone-demo2/$1" }
+  ]
+}
