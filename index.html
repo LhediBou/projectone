@@ -359,6 +359,19 @@
             100% { top: 100%; }
         }
 
+        @keyframes floatHuman {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+
+        @keyframes slideInLeft {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            to { opacity: 1; transform: translateX(0) scale(1.02); }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .content { flex-direction: column; padding: 10% 5%; }
