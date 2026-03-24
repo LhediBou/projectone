@@ -355,6 +355,11 @@ td {
     color: var(--warning);
 }
 
+.tag-danger {
+    background: rgba(255, 41, 117, 0.15);
+    color: #ff2975;
+}
+
 /* States */
 .state-overlay {
     position: fixed;
