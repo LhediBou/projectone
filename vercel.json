@@ -1,4 +1,5 @@
 {
+  "name": "projectone-sherlog-demo5",
   "rewrites": [
     { "source": "/projectone", "destination": "/projectone/projectone-demo2/index.html" },
     { "source": "/projectone/(.*)", "destination": "/projectone/projectone-demo2/$1" }
