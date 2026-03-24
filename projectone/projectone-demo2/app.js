@@ -16,8 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar: document.getElementById('sidebar'),
         openSidebar: document.getElementById('open-sidebar'),
         closeSidebar: document.getElementById('close-sidebar'),
-        moduleStatuses: document.getElementById('module-status-container')
+        moduleStatuses: document.getElementById('module-status-container'),
+        terminalBody: document.getElementById('terminal-body')
     };
+
+    // LOGGING UTILITY
+    const addLog = (message, type = "info") => {
+        if (!elements.terminalBody) return;
+        const entry = document.createElement("div");
+        const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+        entry.className = `log-entry ${type}-msg`;
+        entry.textContent = `[${timestamp}] ${message}`;
+        
+        elements.terminalBody.prepend(entry);
+        
+        // Limit logs to last 30
+        while (elements.terminalBody.children.length > 30) {
+            elements.terminalBody.lastChild.remove();
+        }
+    };
+
+    addLog("SHERLOG.OS v1.0.5 KERNEL LOADED", "system");
+    addLog("HYPERVISOR UPLINK: ESTABLISHED", "info");
+    addLog("GEOSPATIAL MODULE: ACTIVE", "info");
 
     // MOCK DATA ADAPTER
     const MOCK_DATA = {
@@ -187,9 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (criticalCount > 0) {
             healthStatus.textContent = 'STATE: CRITICAL';
             healthContainer.classList.add('health-critical');
+            addLog(`THREAT LEVEL ESCALATION: ${criticalCount} CRITICAL INCIDENTS`, "alert");
         } else if (highCount > 2) {
             healthStatus.textContent = 'STATE: CAUTION';
             healthContainer.classList.add('health-caution');
+            addLog("ENVIRONMENTAL CAUTION: ELEVATED INCIDENT VOLUME", "warning");
         } else {
             healthStatus.textContent = 'STATE: OPTIMAL';
             healthContainer.classList.add('health-optimal');
@@ -202,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.refreshBtn.disabled = true;
 
         try {
+            addLog("LATENCY CHECK: INITIATING UPLINK...", "info");
             const data = await fetchData();
             renderUI(data);
 
@@ -210,12 +234,14 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.loadTrend.textContent = 'Live Uplink: Active';
             
             elements.lastRefresh.textContent = formatStatusTime(new Date());
+            addLog(`SYNC COMPLETE: ${data.records.length} RECORDS INGESTED (LTCY: ${duration}ms)`, "info");
 
         } catch (err) {
             console.error(err);
             const errorText = document.getElementById('error-text');
             errorText.textContent = "⚠️ Data link interrupted. Verify Socrata endpoint.";
             elements.error.classList.remove('hidden');
+            addLog("CRITICAL: UPLINK INTERRUPTION DETECTED", "alert");
         } finally {
             elements.loading.classList.add('hidden');
             elements.refreshBtn.disabled = false;

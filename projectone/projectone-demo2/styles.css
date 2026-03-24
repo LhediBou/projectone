@@ -543,3 +543,56 @@ td {
     font-size: 0.85rem;
     margin-top: 8px;
 }
+
+/* Tactical Terminal */
+.terminal-area {
+    margin-top: 1.5rem;
+}
+
+.terminal-card {
+    background: #05050a !important;
+    border-color: #1a1b26 !important;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0 !important;
+}
+
+.terminal-card .card-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #1a1b26;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.terminal-content {
+    height: 150px;
+    overflow-y: auto;
+    padding: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #4a90e2;
+    display: flex;
+    flex-direction: column-reverse; /* Latest at bottom */
+}
+
+.log-entry {
+    margin-bottom: 0.2rem;
+    opacity: 0.9;
+}
+
+.log-entry.system-msg { color: #fff; font-weight: 700; border-left: 2px solid #4a90e2; padding-left: 8px; }
+.log-entry.alert-msg { color: #ff2975; }
+.log-entry.info-msg { color: #4a90e2; }
+.log-entry.warning-msg { color: #ffd700; }
+
+.badge-uplink {
+    background: rgba(74, 144, 226, 0.1) !important;
+    color: #4a90e2 !important;
+    font-size: 0.6rem;
+}
+
+.terminal-controls { display: flex; gap: 4px; }
+.ctrl-dot { width: 6px; height: 6px; border-radius: 50%; background: #1a1b26; }
+
+.terminal-content::-webkit-scrollbar { width: 4px; }
+.terminal-content::-webkit-scrollbar-thumb { background: #1a1b26; border-radius: 2px; }
