@@ -474,17 +474,29 @@
         const errorMsg = document.getElementById('error-msg');
 
         accessBtn.addEventListener('click', () => {
-            accessBtn.style.opacity = '0';
-            setTimeout(() => {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            
+            if (isIOS) {
+                // DIRECT SYNC FOCUS FOR IOS (Safari compliance)
                 accessBtn.style.display = 'none';
                 passwordBox.style.display = 'block';
+                passwordBox.style.opacity = '1';
+                passInput.focus();
+            } else {
+                // CINEMATIC DELAY FOR PC/DESKTOP
+                accessBtn.style.opacity = '0';
                 setTimeout(() => {
-                    passwordBox.style.opacity = '1';
-                    passInput.focus();
-                }, 10);
-            }, 300);
+                    accessBtn.style.display = 'none';
+                    passwordBox.style.display = 'block';
+                    setTimeout(() => {
+                        passwordBox.style.opacity = '1';
+                        passInput.focus();
+                    }, 10);
+                }, 300);
+            }
         });
 
+        // Use 'input' for faster check or stick to 'keypress' Enter
         passInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 if (passInput.value === '8888') {
