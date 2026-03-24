@@ -36,6 +36,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${date} ${time}`;
     };
 
+    // MAP INITIALIZATION
+    let map = L.map('map', {
+        zoomControl: false,
+        attributionControl: false
+    }).setView([39.1547, -77.2405], 11); // Montgomery County Center
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+    }).addTo(map);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    let markerGroup = L.layerGroup().addTo(map);
+
     // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY POLICE DISPATCH)
     const fetchData = async () => {
         const API_URL = "https://data.montgomerycountymd.gov/resource/98cc-bc7d.json?$limit=15&$order=start_time DESC";
@@ -57,7 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     time: formatStatusTime(item.start_time),
                     module: "POLICE DISPATCH",
                     action: item.initial_type,
-                    status: item.priority === "1" ? "CRITICAL" : (item.priority === "2" ? "HIGH" : "NORMAL")
+                    status: item.priority === "1" ? "CRITICAL" : (item.priority === "2" ? "HIGH" : "NORMAL"),
+                    lat: parseFloat(item.latitude),
+                    lng: parseFloat(item.longitude),
+                    address: item.address
                 }))
             };
         } catch (error) {
@@ -76,14 +93,35 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.categoryKpi.textContent = data.kpis.category;
         elements.lastRefresh.textContent = new Date().toLocaleTimeString();
 
-        // Render Chart
-        elements.chartBars.innerHTML = '';
-        data.trend.forEach(val => {
-            const bar = document.createElement('div');
-            bar.className = 'bar';
-            bar.style.height = `${val}%`;
-            elements.chartBars.appendChild(bar);
+        // Update Map Markers
+        markerGroup.clearLayers();
+        data.records.forEach(r => {
+            if (r.lat && r.lng) {
+                const color = r.status === 'CRITICAL' ? '#ff2975' : (r.status === 'HIGH' ? '#d29922' : '#3fb950');
+                const marker = L.circleMarker([r.lat, r.lng], {
+                    radius: r.status === 'CRITICAL' ? 8 : 6,
+                    fillColor: color,
+                    color: "#fff",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(markerGroup);
+                
+                marker.bindPopup(`
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+                        <strong style="color: ${color}">[${r.status}]</strong><br>
+                        <strong>Type:</strong> ${r.action}<br>
+                        <strong>Addr:</strong> ${r.address}
+                    </div>
+                `);
+            }
         });
+
+        // Fit map to markers if we have any
+        if (data.records.length > 0) {
+            const group = new L.featureGroup(markerGroup.getLayers());
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
 
         // Update Module Status
         elements.moduleStatuses.innerHTML = '';
