@@ -278,7 +278,7 @@
                 <span id="uptime-display">UPLINK: ACTIVE</span>
             </div>
             <div class="hud-item" style="text-align: right;">
-                <!-- Right corner data removed -->
+                <span id="mouse-pos">MOUSE: 0, 0</span>
             </div>
         </div>
         <div class="hud-bottom">
@@ -308,16 +308,10 @@
                 Seamless. Powerful. Ethereal.
             </p>
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
-            <!-- Label-triggered focus for 100% mobile compatibility -->
-            <label for="pass-input" class="glow-button" id="access-btn">INITIALIZE UPLINK</label>
-            
-            <div id="password-box" style="display: none; margin-top: 1.5rem; flex-direction: column; align-items: center; gap: 15px;">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="password" id="pass-input" placeholder="ACCES CODE" maxlength="4" inputmode="numeric" 
-                        style="background: rgba(2,2,5,0.8); border: 2px solid var(--primary-blue); color: #fff; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 18px; letter-spacing: 0.3rem; text-align: center; outline: none; width: 160px; border-radius: 4px; box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);">
-                    <button id="confirm-pass-btn" style="background: var(--primary-blue); border: none; color: #fff; padding: 1rem 20px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: bold; border-radius: 4px; font-size: 1rem;">GO</button>
-                </div>
-                <div id="error-msg" style="color: #ff4d4d; font-size: 0.75rem; font-weight: bold; text-shadow: 0 0 5px #000; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE | HINT: 4 INFINITES</div>
+            <div id="password-box" style="display: none; margin-top: 1rem; opacity: 0; transition: 0.5s;">
+                <input type="password" id="pass-input" placeholder="ENTER ACCESS CODE" 
+                    style="background: rgba(2,2,5,0.7); border: 1px solid var(--primary-blue); color: #fff; padding: 0.8rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2rem; text-align: center; outline: none; width: 200px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                <div id="error-msg" style="color: #ff4d4d; font-size: 0.7rem; margin-top: 0.5rem; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE | HINT: 4 INFINITES</div>
             </div>
         </div>
         <div class="human-side">
@@ -479,44 +473,36 @@
         const passInput = document.getElementById('pass-input');
         const errorMsg = document.getElementById('error-msg');
 
-        const confirmPassBtn = document.getElementById('confirm-pass-btn');
-
-        const validateAccess = () => {
-            if (passInput.value === '8888') {
-                passwordBox.style.opacity = '0';
-                setTimeout(() => passwordBox.style.display = 'none', 500);
-                // Trigger Warp
-                isWarping = true;
-                warpStartTime = Date.now();
-                document.body.classList.add('warping');
-            } else {
-                errorMsg.style.opacity = '1';
-                passInput.style.borderColor = '#ff4d4d';
-                passwordBox.classList.add('shake');
+        accessBtn.addEventListener('click', () => {
+            accessBtn.style.opacity = '0';
+            setTimeout(() => {
+                accessBtn.style.display = 'none';
+                passwordBox.style.display = 'block';
                 setTimeout(() => {
-                    errorMsg.style.opacity = '0';
-                    passInput.style.borderColor = 'var(--primary-blue)';
-                    passwordBox.classList.remove('shake');
-                    passInput.value = '';
-                }, 2000);
-            }
-        };
-
-        // On iPhone, focusing a hidden field via label is the only 100% way
-        passInput.addEventListener('focus', () => {
-            accessBtn.style.display = 'none';
-            passwordBox.style.display = 'flex';
-            setTimeout(() => passwordBox.style.opacity = '1', 10);
+                    passwordBox.style.opacity = '1';
+                    passInput.focus();
+                }, 10);
+            }, 300);
         });
 
-        confirmPassBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            validateAccess();
-        });
-
-        passInput.addEventListener('keydown', (e) => {
+        passInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                validateAccess();
+                if (passInput.value === '8888') {
+                    passwordBox.style.opacity = '0';
+                    setTimeout(() => passwordBox.style.display = 'none', 500);
+                    // Trigger Warp
+                    isWarping = true;
+                    warpStartTime = Date.now();
+                    document.body.classList.add('warping');
+                } else {
+                    errorMsg.style.opacity = '1';
+                    passInput.style.borderColor = '#ff4d4d';
+                    setTimeout(() => {
+                        errorMsg.style.opacity = '0';
+                        passInput.style.borderColor = 'var(--primary-blue)';
+                        passInput.value = '';
+                    }, 2000);
+                }
             }
         });
 
@@ -546,21 +532,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             composer.setSize(window.innerWidth, window.innerHeight);
         });
-
-        window.recordVideo = async () => {
-            const stream = renderer.domElement.captureStream(60);
-            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
-            const chunks = [];
-            recorder.ondataavailable = e => chunks.push(e.data);
-            recorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.href = url;
-                a.download = 'aether_interactive_shock.webm'; a.click();
-            };
-            recorder.start();
-            setTimeout(() => recorder.stop(), 5000);
-        };
     </script>
 </body>
 </html>
