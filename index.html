@@ -308,11 +308,12 @@
                 Seamless. Powerful. Ethereal.
             </p>
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
-            <div id="password-box" style="display: none; margin-top: 1rem; opacity: 0; transition: 0.5s; flex-direction: column; align-items: center; gap: 10px;">
+            <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
+            <div id="password-box" style="visibility: hidden; position: fixed; transform: translateY(20px); opacity: 0; transition: 0.4s ease; display: flex; flex-direction: column; align-items: center; gap: 10px;">
                 <div style="display: flex; gap: 5px;">
-                    <input type="tel" id="pass-input" placeholder="CODE" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+                    <input type="password" id="pass-input" placeholder="CODE" maxlength="4" inputmode="numeric" 
                         style="background: rgba(2,2,5,0.7); border: 1px solid var(--primary-blue); color: #fff; padding: 0.8rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2rem; text-align: center; outline: none; width: 140px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
-                    <button id="confirm-pass-btn" style="background: var(--primary-blue); border: none; color: #fff; padding: 0 15px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-weight: bold;">GO</button>
+                    <button id="confirm-pass-btn" style="background: var(--primary-blue); border: none; color: #fff; padding: 0 15px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-weight: bold;">OK</button>
                 </div>
                 <div id="error-msg" style="color: #ff4d4d; font-size: 0.7rem; margin-top: 0.5rem; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE | HINT: 4 INFINITES</div>
             </div>
@@ -500,9 +501,13 @@
         };
 
         accessBtn.addEventListener('click', () => {
-            accessBtn.style.display = 'none';
-            passwordBox.style.display = 'flex';
+            // Instant Reveal
+            passwordBox.style.visibility = 'visible';
             passwordBox.style.opacity = '1';
+            passwordBox.style.position = 'relative';
+            passwordBox.style.transform = 'translateY(0)';
+            accessBtn.style.display = 'none';
+            // Instant Focus (Critical for iOS)
             passInput.focus();
         });
 
