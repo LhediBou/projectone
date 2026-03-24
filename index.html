@@ -256,54 +256,6 @@
             50% { top: 110%; }
         }
 
-        /* Digital Glitch Effect */
-        .glitch {
-            position: relative;
-        }
-
-        .glitch-active {
-            animation: glitch-anim 0.2s cubic-bezier(.25,.46,.45,.94) both infinite;
-        }
-
-        @keyframes glitch-anim {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0.8;
-            display: none;
-        }
-
-        .glitch-active::before {
-            display: block;
-            color: #ff00c1;
-            z-index: -1;
-            animation: glitch-anim-2 0.3s cubic-bezier(.25,.46,.45,.94) reverse both infinite;
-        }
-
-        .glitch-active::after {
-            display: block;
-            color: #00fff9;
-            z-index: -2;
-            animation: glitch-anim-2 0.2s cubic-bezier(.25,.46,.45,.94) both infinite;
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { transform: translate(0); }
-            33% { transform: translate(3px, -3px); }
-            66% { transform: translate(-3px, 3px); }
-            100% { transform: translate(0); }
-        }
-
         /* Success Overlay */
         #access-overlay {
             position: fixed;
@@ -450,7 +402,7 @@
     </div>
     <div class="content" id="main-content">
         <div class="text-side">
-            <h1 class="logo glitch" data-text="AETHER" id="logo-aether">AETHER</h1>
+            <h1 class="logo">AETHER</h1>
             <p class="tagline">Scale the Infinite</p>
             <p class="marketing-copy">
                 Experience the next generation of data visualization.<br>
@@ -695,22 +647,6 @@
                 }, 500);
             }
         }
-
-        // Glitch Logic
-        const logo = document.getElementById('logo-aether');
-        const humanImg = document.querySelector('.human-image');
-
-        [logo, humanImg].forEach(el => {
-            el.addEventListener('mouseenter', () => el.classList.add('glitch-active'));
-            el.addEventListener('mouseleave', () => el.classList.remove('glitch-active'));
-        });
-
-        setInterval(() => {
-            if (Math.random() > 0.95) {
-                logo.classList.add('glitch-active');
-                setTimeout(() => logo.classList.remove('glitch-active'), 150);
-            }
-        }, 2000);
 
         // HUD Interaction & Parallax
         const hudOverlay = document.getElementById('hud-overlay');
