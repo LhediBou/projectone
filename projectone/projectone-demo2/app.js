@@ -17,7 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
         openSidebar: document.getElementById('open-sidebar'),
         closeSidebar: document.getElementById('close-sidebar'),
         moduleStatuses: document.getElementById('module-status-container'),
-        terminalBody: document.getElementById('terminal-body')
+        terminalBody: document.getElementById('terminal-body'),
+        switchSafety: document.getElementById('switch-safety'),
+        switchGrowth: document.getElementById('switch-growth')
+    };
+
+    let currentModule = "safety"; // safety | growth
+
+    // DATA ENDPOINTS
+    const ENDPOINTS = {
+        safety: "https://data.montgomerycountymd.gov/resource/98cc-bc7d.json?$limit=15&$order=start_time DESC",
+        growth: "https://data.montgomerycountymd.gov/resource/i26v-w6bd.json?$limit=15&$order=addeddate DESC"
     };
 
     // LOGGING UTILITY
@@ -45,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         modules: ["SHERLOG", "ATHENA", "SPLASH", "INTERACTION", "LOOP"],
         actions: ["File Audit", "Batch Sync", "State Update", "Event Hook", "Logic Link"],
         categories: ["Monitoring", "Sync", "Auth", "IO", "AI"],
-        statuses: ["Completed", "Processing", "Warning"]
+        statuses: ["Completed", "Processing", "Warning"],
+        placeholder: "https://via.placeholder.com/150/1a1b26/4a90e2?text=SHERLOG"
     };
 
     // UTILITIES
@@ -91,33 +102,51 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `).openPopup();
 
-    // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY POLICE DISPATCH)
+    // CORE LOGIC: DATA FETCHING
     const fetchData = async () => {
-        const API_URL = "https://data.montgomerycountymd.gov/resource/98cc-bc7d.json?$limit=15&$order=start_time DESC";
+        const API_URL = ENDPOINTS[currentModule];
         
         try {
             const response = await fetch(API_URL);
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             const rawData = await response.json();
 
-            // Transform Police Data into Dashboard format
-            return {
-                kpis: {
-                    total: rawData.length,
-                    category: rawData[0]?.initial_type || "N/A"
-                },
-                trend: Array.from({ length: 12 }, () => Math.floor(Math.random() * 80) + 10),
-                records: rawData.map(item => ({
-                    id: item.incident_id,
-                    time: formatStatusTime(item.start_time),
-                    module: "POLICE DISPATCH",
-                    action: item.initial_type,
-                    status: item.priority === "1" ? "CRITICAL" : (item.priority === "2" ? "HIGH" : "NORMAL"),
-                    lat: parseFloat(item.latitude),
-                    lng: parseFloat(item.longitude),
-                    address: item.address
-                }))
-            };
+            if (currentModule === "safety") {
+                return {
+                    kpis: {
+                        total: rawData.length,
+                        category: rawData[0]?.initial_type || "N/A"
+                    },
+                    records: rawData.map(item => ({
+                        id: item.incident_id,
+                        time: formatStatusTime(item.start_time),
+                        module: "POLICE DISPATCH",
+                        action: item.initial_type,
+                        status: item.priority === "1" ? "CRITICAL" : (item.priority === "2" ? "HIGH" : "NORMAL"),
+                        lat: parseFloat(item.latitude),
+                        lng: parseFloat(item.longitude),
+                        address: item.address
+                    }))
+                };
+            } else {
+                // Growth Module Mapping (Building Permits)
+                return {
+                    kpis: {
+                        total: rawData.length,
+                        category: rawData[0]?.worktype || "N/A"
+                    },
+                    records: rawData.map(item => ({
+                        id: item.permitno,
+                        time: formatStatusTime(item.addeddate),
+                        module: "URBAN GROWTH",
+                        action: item.worktype + ": " + (item.usecode || "BUILDING"),
+                        status: item.worktype === "NEW" ? "CRITICAL" : "NORMAL", // Treat 'New' as high priority for viz
+                        lat: parseFloat(item.location?.latitude),
+                        lng: parseFloat(item.location?.longitude),
+                        address: item.stno + " " + item.stname + " " + (item.suffix || "")
+                    }))
+                };
+            }
         } catch (error) {
             console.error("Fetch Error:", error);
             throw error;
@@ -138,7 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
         markerGroup.clearLayers();
         data.records.forEach(r => {
             if (r.lat && r.lng) {
-                const color = r.status === 'CRITICAL' ? '#ff2975' : (r.status === 'HIGH' ? '#d29922' : '#3fb950');
+                let color;
+                if (currentModule === "safety") {
+                    color = r.status === 'CRITICAL' ? '#ff2975' : (r.status === 'HIGH' ? '#d29922' : '#3fb950');
+                } else {
+                    color = r.status === 'CRITICAL' ? '#00f2ff' : '#7000ff'; // Cyan for New, Purple for others
+                }
+
                 const marker = L.circleMarker([r.lat, r.lng], {
                     radius: r.status === 'CRITICAL' ? 8 : 6,
                     fillColor: color,
@@ -176,6 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
             li.innerHTML = `<span>${dept}</span> <span class="status-tag tag-success">Active</span>`;
             elements.moduleStatuses.appendChild(li);
         });
+
+        // Update User Profile Image if existed (using placeholder for now)
+        const userAvatar = document.querySelector('.user-avatar');
+        if (userAvatar && !userAvatar.innerHTML.includes('<img')) {
+            // Optional: convert initials to image or just keep as is
+        }
 
         // Render Table
         elements.tableBody.innerHTML = '';
@@ -287,6 +328,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     elements.refreshBtn.addEventListener('click', handleRefresh);
+
+    const updateModuleUI = () => {
+        elements.switchSafety.classList.toggle('active', currentModule === 'safety');
+        elements.switchGrowth.classList.toggle('active', currentModule === 'growth');
+        
+        // Update header badge
+        const badge = document.querySelector('.badge-safety');
+        if (badge) {
+            badge.textContent = currentModule === 'safety' ? 'PUBLIC SAFETY: MONTGOMERY' : 'URBAN GROWTH: MONTGOMERY';
+            badge.style.borderColor = currentModule === 'safety' ? 'rgba(255, 41, 117, 0.3)' : 'rgba(0, 242, 255, 0.3)';
+            badge.style.color = currentModule === 'safety' ? '#ff2975' : '#00f2ff';
+        }
+
+        addLog(`SWITCHING TO ${currentModule.toUpperCase()} MODULE`, "system");
+        handleRefresh();
+    };
+
+    elements.switchSafety.addEventListener('click', () => {
+        if (currentModule === 'safety') return;
+        currentModule = 'safety';
+        updateModuleUI();
+    });
+
+    elements.switchGrowth.addEventListener('click', () => {
+        if (currentModule === 'growth') return;
+        currentModule = 'growth';
+        updateModuleUI();
+    });
 
     // INITIAL LOAD
     handleRefresh();

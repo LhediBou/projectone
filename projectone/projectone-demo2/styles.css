@@ -10,6 +10,8 @@
     --text-primary: #c9d1d9;
     --text-muted: #8b949e;
     --radius: 6px;
+    --growth-primary: #00f2ff;
+    --growth-accent: #7000ff;
 }
 
 * {
@@ -28,6 +30,8 @@ body {
 .app-container {
     display: flex;
     min-height: 100vh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Sidebar */
@@ -541,7 +545,61 @@ td {
     color: var(--primary);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem;
-    margin-top: 8px;
+}
+
+/* Module Switcher Styling */
+.module-switcher {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.switcher-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.switcher-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.switcher-btn.active[data-module="safety"] {
+    background: rgba(255, 41, 117, 0.1);
+    border-color: #ff2975;
+    color: #ff2975;
+}
+
+.switcher-btn.active[data-module="growth"] {
+    background: rgba(0, 242, 255, 0.1);
+    border-color: var(--growth-primary);
+    color: var(--growth-primary);
+}
+
+.btn-icon { font-size: 0.9rem; }
+
+/* Ultra-Wide Optimization */
+@media (min-width: 1800px) {
+    .main-content {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
 }
 
 /* Tactical Terminal */
