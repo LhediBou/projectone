@@ -184,6 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
         switchView('brief');
     });
 
+    elements.refreshBtn.addEventListener('click', handleRefresh);
+
     // INITIAL LOAD
     handleRefresh();
 });
