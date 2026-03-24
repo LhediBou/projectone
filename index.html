@@ -308,6 +308,11 @@
                 Seamless. Powerful. Ethereal.
             </p>
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
+            <div id="password-box" style="display: none; margin-top: 1rem; opacity: 0; transition: 0.5s;">
+                <input type="password" id="pass-input" placeholder="ENTER ACCESS CODE" 
+                    style="background: rgba(2,2,5,0.7); border: 1px solid var(--primary-blue); color: #fff; padding: 0.8rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2rem; text-align: center; outline: none; width: 200px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                <div id="error-msg" style="color: #ff4d4d; font-size: 0.7rem; margin-top: 0.5rem; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE</div>
+            </div>
         </div>
         <div class="human-side">
             <img src="spokesperson_clean.png" alt="Spokesperson" class="human-image">
@@ -463,15 +468,42 @@
 
         animate();
 
+        const accessBtn = document.getElementById('access-btn');
+        const passwordBox = document.getElementById('password-box');
+        const passInput = document.getElementById('pass-input');
+        const errorMsg = document.getElementById('error-msg');
+
         accessBtn.addEventListener('click', () => {
             accessBtn.style.opacity = '0';
             setTimeout(() => {
                 accessBtn.style.display = 'none';
-                // Direct Access Trigger
-                isWarping = true;
-                warpStartTime = Date.now();
-                document.body.classList.add('warping');
+                passwordBox.style.display = 'block';
+                setTimeout(() => {
+                    passwordBox.style.opacity = '1';
+                    passInput.focus();
+                }, 10);
             }, 300);
+        });
+
+        passInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (passInput.value === '9999') {
+                    passwordBox.style.opacity = '0';
+                    setTimeout(() => passwordBox.style.display = 'none', 500);
+                    // Trigger Warp
+                    isWarping = true;
+                    warpStartTime = Date.now();
+                    document.body.classList.add('warping');
+                } else {
+                    errorMsg.style.opacity = '1';
+                    passInput.style.borderColor = '#ff4d4d';
+                    setTimeout(() => {
+                        errorMsg.style.opacity = '0';
+                        passInput.style.borderColor = 'var(--primary-blue)';
+                        passInput.value = '';
+                    }, 2000);
+                }
+            }
         });
 
         // HUD Interaction & Parallax
