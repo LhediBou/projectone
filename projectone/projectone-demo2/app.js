@@ -50,6 +50,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let markerGroup = L.layerGroup().addTo(map);
 
+    // SHERLOG HQ MARKER (Permanent)
+    const hqCoords = [39.1547, -77.2405];
+    const hqMarker = L.circleMarker(hqCoords, {
+        radius: 12,
+        fillColor: "#fff",
+        color: "#4a90e2",
+        weight: 3,
+        opacity: 1,
+        fillOpacity: 0.9,
+        className: 'hq-pulse-marker'
+    }).addTo(map);
+    
+    hqMarker.bindPopup(`
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; text-align: center;">
+            <strong style="color: #4a90e2;">SHERLOG HQ</strong><br>
+            <span>UPLINK CENTER ALPHA</span><br>
+            <span style="font-size: 0.6rem; color: #888;">COORD: 39.1547, -77.2405</span>
+        </div>
+    `).openPopup();
+
     // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY POLICE DISPATCH)
     const fetchData = async () => {
         const API_URL = "https://data.montgomerycountymd.gov/resource/98cc-bc7d.json?$limit=15&$order=start_time DESC";

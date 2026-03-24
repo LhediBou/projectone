@@ -242,6 +242,17 @@ h1 {
 .health-critical { color: #ff2975; text-shadow: 0 0 10px rgba(255, 41, 117, 0.4); }
 .health-critical .pulse-dot { background: #ff2975; box-shadow: 0 0 10px #ff2975; }
 
+/* HQ Marker Pulsing */
+.hq-pulse-marker {
+    animation: hq-glow 2s infinite ease-in-out;
+}
+
+@keyframes hq-glow {
+    0% { filter: drop-shadow(0 0 5px #4a90e2); }
+    50% { filter: drop-shadow(0 0 15px #4a90e2); }
+    100% { filter: drop-shadow(0 0 5px #4a90e2); }
+}
+
 .badge-safety {
     background: rgba(248, 81, 73, 0.15) !important;
     color: var(--danger) !important;
