@@ -308,9 +308,12 @@
                 Seamless. Powerful. Ethereal.
             </p>
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
-            <div id="password-box" style="display: none; margin-top: 1rem; opacity: 0; transition: 0.5s;">
-                <input type="password" id="pass-input" placeholder="ENTER ACCESS CODE" 
-                    style="background: rgba(2,2,5,0.7); border: 1px solid var(--primary-blue); color: #fff; padding: 0.8rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2rem; text-align: center; outline: none; width: 200px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+            <div id="password-box" style="display: none; margin-top: 1rem; opacity: 0; transition: 0.5s; flex-direction: column; align-items: center; gap: 10px;">
+                <div style="display: flex; gap: 5px;">
+                    <input type="tel" id="pass-input" placeholder="CODE" maxlength="4" inputmode="numeric" pattern="[0-9]*"
+                        style="background: rgba(2,2,5,0.7); border: 1px solid var(--primary-blue); color: #fff; padding: 0.8rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2rem; text-align: center; outline: none; width: 140px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                    <button id="confirm-pass-btn" style="background: var(--primary-blue); border: none; color: #fff; padding: 0 15px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-weight: bold;">GO</button>
+                </div>
                 <div id="error-msg" style="color: #ff4d4d; font-size: 0.7rem; margin-top: 0.5rem; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE | HINT: 4 INFINITES</div>
             </div>
         </div>
@@ -473,36 +476,41 @@
         const passInput = document.getElementById('pass-input');
         const errorMsg = document.getElementById('error-msg');
 
-        accessBtn.addEventListener('click', () => {
-            accessBtn.style.opacity = '0';
-            setTimeout(() => {
-                accessBtn.style.display = 'none';
-                passwordBox.style.display = 'block';
+        const confirmPassBtn = document.getElementById('confirm-pass-btn');
+
+        const validateAccess = () => {
+            if (passInput.value === '8888') {
+                passwordBox.style.opacity = '0';
+                setTimeout(() => passwordBox.style.display = 'none', 500);
+                // Trigger Warp
+                isWarping = true;
+                warpStartTime = Date.now();
+                document.body.classList.add('warping');
+            } else {
+                errorMsg.style.opacity = '1';
+                passInput.style.borderColor = '#ff4d4d';
+                passwordBox.classList.add('shake');
                 setTimeout(() => {
-                    passwordBox.style.opacity = '1';
-                    passInput.focus();
-                }, 10);
-            }, 300);
+                    errorMsg.style.opacity = '0';
+                    passInput.style.borderColor = 'var(--primary-blue)';
+                    passwordBox.classList.remove('shake');
+                    passInput.value = '';
+                }, 2000);
+            }
+        };
+
+        accessBtn.addEventListener('click', () => {
+            accessBtn.style.display = 'none';
+            passwordBox.style.display = 'flex';
+            passwordBox.style.opacity = '1';
+            passInput.focus();
         });
 
-        passInput.addEventListener('keypress', (e) => {
+        confirmPassBtn.addEventListener('click', validateAccess);
+
+        passInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                if (passInput.value === '8888') {
-                    passwordBox.style.opacity = '0';
-                    setTimeout(() => passwordBox.style.display = 'none', 500);
-                    // Trigger Warp
-                    isWarping = true;
-                    warpStartTime = Date.now();
-                    document.body.classList.add('warping');
-                } else {
-                    errorMsg.style.opacity = '1';
-                    passInput.style.borderColor = '#ff4d4d';
-                    setTimeout(() => {
-                        errorMsg.style.opacity = '0';
-                        passInput.style.borderColor = 'var(--primary-blue)';
-                        passInput.value = '';
-                    }, 2000);
-                }
+                validateAccess();
             }
         });
 
@@ -517,7 +525,7 @@
             const y = (e.clientY / window.innerHeight - 0.5) * 20;
             
             hudOverlay.style.transform = `translate(${-x}px, ${-y}px)`;
-            mousePosDisplay.innerText = `MOUSE: ${e.clientX}, ${e.clientY}`;
+            if (mousePosDisplay) mousePosDisplay.innerText = `MOUSE: ${e.clientX}, ${e.clientY}`;
         });
 
         setInterval(() => {
