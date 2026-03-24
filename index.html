@@ -149,102 +149,6 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
-        /* Biometric Keypad */
-        #keypad-wrapper {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(2, 2, 5, 0.85);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(74, 144, 226, 0.4);
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            z-index: 200;
-            opacity: 0;
-            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 20px rgba(74, 144, 226, 0.2);
-        }
-
-        .keypad-header {
-            width: 100%;
-            text-align: center;
-            border-bottom: 1px solid rgba(74, 144, 226, 0.3);
-            padding-bottom: 0.5rem;
-        }
-
-        .keypad-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--primary-blue);
-            letter-spacing: 0.3rem;
-        }
-
-        .keypad-display {
-            width: 100%;
-            height: 50px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            letter-spacing: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            color: #fff;
-            text-shadow: 0 0 10px var(--primary-blue);
-        }
-
-        .keypad-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-
-        .key-btn {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            pointer-events: auto;
-        }
-
-        .key-btn:hover {
-            background: rgba(74, 144, 226, 0.2);
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
-        }
-
-        .key-btn:active {
-            transform: scale(0.95);
-        }
-
-        .laser-scanner {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            overflow: hidden;
-            border-radius: 1rem;
-        }
-
-        @keyframes laserScan {
-            0%, 100% { top: -60%; }
-            50% { top: 110%; }
-        }
-
         /* Success Overlay */
         #access-overlay {
             position: fixed;
@@ -404,29 +308,6 @@
                 Seamless. Powerful. Ethereal.
             </p>
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
-            
-            <div id="keypad-wrapper">
-                <div class="laser-scanner"></div>
-                <div class="keypad-header">
-                    <div class="keypad-title">BIOMETRIC AUTHORIZATION</div>
-                </div>
-                <div class="keypad-display" id="key-display">____</div>
-                <div class="keypad-grid">
-                    <div class="key-btn" data-key="1">1</div>
-                    <div class="key-btn" data-key="2">2</div>
-                    <div class="key-btn" data-key="3">3</div>
-                    <div class="key-btn" data-key="4">4</div>
-                    <div class="key-btn" data-key="5">5</div>
-                    <div class="key-btn" data-key="6">6</div>
-                    <div class="key-btn" data-key="7">7</div>
-                    <div class="key-btn" data-key="8">8</div>
-                    <div class="key-btn" data-key="9">9</div>
-                    <div class="key-btn" data-key="CLR" style="font-size: 0.7rem;">CLR</div>
-                    <div class="key-btn" data-key="0">0</div>
-                    <div class="key-btn" data-key="ENT" style="font-size: 0.7rem; color: var(--primary-blue);">ENT</div>
-                </div>
-                <div id="error-msg">INVALID_CODE_RETRY</div>
-            </div>
         </div>
         <div class="human-side">
             <img src="spokesperson_clean.png" alt="Spokesperson" class="human-image">
@@ -582,65 +463,16 @@
 
         animate();
 
-        // Keypad Interaction
-        const accessBtn = document.getElementById('access-btn');
-        const keypadWrapper = document.getElementById('keypad-wrapper');
-        const keyDisplay = document.getElementById('key-display');
-        const laser = document.getElementById('laser');
-        let currentCode = "";
-
         accessBtn.addEventListener('click', () => {
             accessBtn.style.opacity = '0';
             setTimeout(() => {
                 accessBtn.style.display = 'none';
-                keypadWrapper.style.display = 'flex';
-                setTimeout(() => {
-                    keypadWrapper.style.opacity = '1';
-                    keypadWrapper.style.transform = 'translate(-50%, -50%) scale(1)';
-                }, 10);
-            }, 300);
-        });
-
-        document.querySelectorAll('.key-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const key = btn.getAttribute('data-key');
-                
-                if (key === 'CLR') {
-                    currentCode = "";
-                } else if (key === 'ENT') {
-                    checkCode();
-                } else if (currentCode.length < 4) {
-                    currentCode += key;
-                }
-                
-                updateDisplay();
-                if (currentCode.length === 4 && key !== 'ENT') {
-                    // Auto-submit if needed, but let's wait for ENT for more "intentional" UX
-                }
-            });
-        });
-
-        function updateDisplay() {
-            keyDisplay.innerText = currentCode.padEnd(4, '_').replace(/./g, (c, i) => i < currentCode.length ? '*' : '_');
-        }
-
-        function checkCode() {
-            if (currentCode === '9999') {
+                // Direct Access Trigger
                 isWarping = true;
                 warpStartTime = Date.now();
                 document.body.classList.add('warping');
-                keypadWrapper.style.opacity = '0';
-                setTimeout(() => keypadWrapper.style.display = 'none', 500);
-            } else {
-                keypadWrapper.classList.add('shake');
-                document.getElementById('error-msg').style.opacity = '1';
-                setTimeout(() => {
-                    keypadWrapper.classList.remove('shake');
-                    currentCode = "";
-                    updateDisplay();
-                }, 500);
-            }
-        }
+            }, 300);
+        });
 
         // HUD Interaction & Parallax
         const hudOverlay = document.getElementById('hud-overlay');
