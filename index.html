@@ -308,14 +308,16 @@
                 Seamless. Powerful. Ethereal.
             </p>
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
-            <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
-            <div id="password-box" style="visibility: hidden; position: fixed; transform: translateY(20px); opacity: 0; transition: 0.4s ease; display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                <div style="display: flex; gap: 5px;">
-                    <input type="password" id="pass-input" placeholder="CODE" maxlength="4" inputmode="numeric" 
-                        style="background: rgba(2,2,5,0.7); border: 1px solid var(--primary-blue); color: #fff; padding: 0.8rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2rem; text-align: center; outline: none; width: 140px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
-                    <button id="confirm-pass-btn" style="background: var(--primary-blue); border: none; color: #fff; padding: 0 15px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-weight: bold;">OK</button>
+            <!-- Label-triggered focus for 100% mobile compatibility -->
+            <label for="pass-input" class="glow-button" id="access-btn">INITIALIZE UPLINK</label>
+            
+            <div id="password-box" style="display: none; margin-top: 1.5rem; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="password" id="pass-input" placeholder="ACCES CODE" maxlength="4" inputmode="numeric" 
+                        style="background: rgba(2,2,5,0.8); border: 2px solid var(--primary-blue); color: #fff; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 18px; letter-spacing: 0.3rem; text-align: center; outline: none; width: 160px; border-radius: 4px; box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);">
+                    <button id="confirm-pass-btn" style="background: var(--primary-blue); border: none; color: #fff; padding: 1rem 20px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: bold; border-radius: 4px; font-size: 1rem;">GO</button>
                 </div>
-                <div id="error-msg" style="color: #ff4d4d; font-size: 0.7rem; margin-top: 0.5rem; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE | HINT: 4 INFINITES</div>
+                <div id="error-msg" style="color: #ff4d4d; font-size: 0.75rem; font-weight: bold; text-shadow: 0 0 5px #000; opacity: 0; transition: 0.3s;">INVALID_ACCESS_CODE | HINT: 4 INFINITES</div>
             </div>
         </div>
         <div class="human-side">
@@ -500,18 +502,17 @@
             }
         };
 
-        accessBtn.addEventListener('click', () => {
-            // Instant Reveal
-            passwordBox.style.visibility = 'visible';
-            passwordBox.style.opacity = '1';
-            passwordBox.style.position = 'relative';
-            passwordBox.style.transform = 'translateY(0)';
+        // On iPhone, focusing a hidden field via label is the only 100% way
+        passInput.addEventListener('focus', () => {
             accessBtn.style.display = 'none';
-            // Instant Focus (Critical for iOS)
-            passInput.focus();
+            passwordBox.style.display = 'flex';
+            setTimeout(() => passwordBox.style.opacity = '1', 10);
         });
 
-        confirmPassBtn.addEventListener('click', validateAccess);
+        confirmPassBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            validateAccess();
+        });
 
         passInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
