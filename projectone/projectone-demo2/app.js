@@ -31,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // [PRECISION] 19870_XINU: Temporal Sealing Epoch
     const formatStatusTime = (dateInput) => {
         const d = new Date(dateInput);
-        return d.toLocaleTimeString('en-US', { hour12: false });
+        const date = d.toISOString().split('T')[0];
+        const time = d.toLocaleTimeString('en-US', { hour12: false });
+        return `${date} ${time}`;
     };
 
     // CORE LOGIC: DATA FETCHING (REAL-TIME: MONTGOMERY POLICE DISPATCH)
