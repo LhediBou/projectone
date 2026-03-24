@@ -202,6 +202,46 @@ h1 {
     color: var(--text-muted);
 }
 
+/* City Health Indicator */
+.city-health {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    background: rgba(48, 54, 61, 0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-width: 220px;
+}
+
+.health-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.health-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    transition: 0.3s;
+}
+
+/* States */
+.health-optimal { color: var(--success); }
+.health-optimal .pulse-dot { background: var(--success); }
+
+.health-caution { color: var(--warning); }
+.health-caution .pulse-dot { background: var(--warning); }
+
+.health-critical { color: #ff2975; text-shadow: 0 0 10px rgba(255, 41, 117, 0.4); }
+.health-critical .pulse-dot { background: #ff2975; box-shadow: 0 0 10px #ff2975; }
+
 .badge-safety {
     background: rgba(248, 81, 73, 0.15) !important;
     color: var(--danger) !important;
