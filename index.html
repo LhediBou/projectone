@@ -150,6 +150,160 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
+        /* Biometric Keypad */
+        #keypad-wrapper {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 1rem;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 200;
+            opacity: 0;
+            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .keypad-header {
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .keypad-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--primary-blue);
+            letter-spacing: 0.3rem;
+        }
+
+        .keypad-display {
+            width: 100%;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            letter-spacing: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-blue);
+        }
+
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .key-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            pointer-events: auto;
+        }
+
+        .key-btn:hover {
+            background: rgba(74, 144, 226, 0.2);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .key-btn:active {
+            transform: scale(0.95);
+        }
+
+        .laser-scanner {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+
+        .laser-line {
+            position: absolute;
+            top: -10%; left: 0;
+            width: 100%; height: 50%;
+            background: linear-gradient(to bottom, transparent, rgba(74, 144, 226, 0.1), transparent);
+            border-bottom: 2px solid var(--primary-blue);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.5);
+            animation: laserScan 3s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes laserScan {
+            0%, 100% { top: -60%; }
+            50% { top: 110%; }
+        }
+
+        /* Digital Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch-active {
+            animation: glitch-anim 0.2s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0.8;
+            display: none;
+        }
+
+        .glitch-active::before {
+            display: block;
+            color: #ff00c1;
+            z-index: -1;
+            animation: glitch-anim-2 0.3s cubic-bezier(.25,.46,.45,.94) reverse both infinite;
+        }
+
+        .glitch-active::after {
+            display: block;
+            color: #00fff9;
+            z-index: -2;
+            animation: glitch-anim-2 0.2s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { transform: translate(0); }
+            33% { transform: translate(3px, -3px); }
+            66% { transform: translate(-3px, 3px); }
+            100% { transform: translate(0); }
+        }
+
         /* Success Overlay */
         #access-overlay {
             position: fixed;
@@ -195,29 +349,98 @@
             transition: 0.3s;
         }
 
-        /* Warp State */
-        .warping .text-side, .warping .human-side {
-            opacity: 0 !important;
-            transform: scale(0.9) !important;
-            transition: 1s cubic-bezier(0.19, 1, 0.22, 1);
-            filter: blur(20px);
+        /* Tactical HUD Overlay */
+        #hud-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: rgba(74, 144, 226, 0.4);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.1rem;
+            transition: 0.3s ease-out;
         }
 
-        @keyframes floatHuman {
-            from { transform: translateY(0); }
-            to { transform: translateY(-20px); }
+        .hud-corner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
 
-        @keyframes slideInLeft {
-            to { opacity: 1; transform: translateX(0); }
+        .hud-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
-        @keyframes slideInRight {
-            to { opacity: 1; transform: translateX(0) scale(1.02); }
+        .hud-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .hud-item span {
+            background: rgba(74, 144, 226, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-left: 1px solid var(--primary-blue);
+        }
+
+        .scanning-line {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(to right, transparent, var(--primary-blue), transparent);
+            opacity: 0.2;
+            box-shadow: 0 0 15px var(--primary-blue);
+            animation: scanLoop 8s linear infinite;
+        }
+
+        @keyframes scanLoop {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content { flex-direction: column; padding: 10% 5%; }
+            .text-side, .human-side { max-width: 100%; width: 100%; }
+            .logo { font-size: 3rem; }
+            .human-side { height: 50vh; }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body class="initial">
+    <div id="hud-overlay">
+        <div class="scanning-line"></div>
+        <div class="hud-corner">
+            <div class="hud-item">
+                <span>SYSTEM: SHERLOG.OS [v3.0.1]</span>
+                <span id="uptime-display">UPLINK: ACTIVE</span>
+            </div>
+            <div class="hud-item" style="text-align: right;">
+                <span>SIGNAL: MONTGOMERY_COUNTY.STREAM</span>
+                <span>SECURE-NODE: 0x4F2A</span>
+            </div>
+        </div>
+        <div class="hud-bottom">
+            <div class="hud-item">
+                <span>COORD: 39.1547° N, 77.2405° W</span>
+                <span>ALTITUDE: 142M AMSL</span>
+            </div>
+            <div class="hud-item" style="text-align: right;">
+                <span id="mouse-pos">MOUSE: LATENCY_SYNC...</span>
+                <span>SCAN-STATUS: MONITORING</span>
+            </div>
+        </div>
+    </div>
     <div id="canvas-container"></div>
     <div id="access-overlay">
         <div class="access-granted">
@@ -227,20 +450,35 @@
     </div>
     <div class="content" id="main-content">
         <div class="text-side">
-            <h1 class="logo">AETHER</h1>
+            <h1 class="logo glitch" data-text="AETHER" id="logo-aether">AETHER</h1>
             <p class="tagline">Scale the Infinite</p>
             <p class="marketing-copy">
                 Experience the next generation of data visualization.<br>
                 Seamless. Powerful. Ethereal.
             </p>
-            <div class="glow-button" id="access-btn">ENTER PASSWORD</div>
+            <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
             
-            <div id="password-wrapper" style="display: none; margin-top: 1rem; opacity: 0; transition: 0.5s; text-align: center;">
-                <input type="password" id="pass-input" placeholder="CODE" maxlength="4" 
-                    style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); 
-                           color: white; padding: 0.8rem; font-family: inherit; font-size: 1.2rem; 
-                           text-align: center; width: 120px; letter-spacing: 0.5rem; outline: none;">
-                <div id="error-msg">TRY AGAIN</div>
+            <div id="keypad-wrapper">
+                <div class="laser-scanner"><div class="laser-line" id="laser"></div></div>
+                <div class="keypad-header">
+                    <div class="keypad-title">BIOMETRIC AUTHORIZATION</div>
+                </div>
+                <div class="keypad-display" id="key-display">____</div>
+                <div class="keypad-grid">
+                    <div class="key-btn" data-key="1">1</div>
+                    <div class="key-btn" data-key="2">2</div>
+                    <div class="key-btn" data-key="3">3</div>
+                    <div class="key-btn" data-key="4">4</div>
+                    <div class="key-btn" data-key="5">5</div>
+                    <div class="key-btn" data-key="6">6</div>
+                    <div class="key-btn" data-key="7">7</div>
+                    <div class="key-btn" data-key="8">8</div>
+                    <div class="key-btn" data-key="9">9</div>
+                    <div class="key-btn" data-key="CLR" style="font-size: 0.7rem;">CLR</div>
+                    <div class="key-btn" data-key="0">0</div>
+                    <div class="key-btn" data-key="ENT" style="font-size: 0.7rem; color: var(--primary-blue);">ENT</div>
+                </div>
+                <div id="error-msg">INVALID_CODE_RETRY</div>
             </div>
         </div>
         <div class="human-side">
@@ -397,44 +635,103 @@
 
         animate();
 
-        // Interaction
+        // Keypad Interaction
         const accessBtn = document.getElementById('access-btn');
-        const passWrapper = document.getElementById('password-wrapper');
-        const passInput = document.getElementById('pass-input');
+        const keypadWrapper = document.getElementById('keypad-wrapper');
+        const keyDisplay = document.getElementById('key-display');
+        const laser = document.getElementById('laser');
+        let currentCode = "";
 
         accessBtn.addEventListener('click', () => {
-            accessBtn.style.display = 'none';
-            passWrapper.style.display = 'block';
+            accessBtn.style.opacity = '0';
             setTimeout(() => {
-                passWrapper.style.opacity = '1';
-                passInput.focus();
-            }, 10);
+                accessBtn.style.display = 'none';
+                keypadWrapper.style.display = 'flex';
+                setTimeout(() => {
+                    keypadWrapper.style.opacity = '1';
+                    keypadWrapper.style.transform = 'translate(-50%, -50%) scale(1)';
+                    laser.style.display = 'block';
+                }, 10);
+            }, 300);
         });
 
-        passInput.addEventListener('input', (e) => {
-            const val = e.target.value;
-            if (val.length === 4) {
-                if (val === '9999') {
-                    // Success!
-                    isWarping = true;
-                    warpStartTime = Date.now();
-                    document.body.classList.add('warping');
-                    passWrapper.style.opacity = '0';
-                    setTimeout(() => passWrapper.style.display = 'none', 500);
-                } else {
-                    // Fail!
-                    passInput.classList.add('shake');
-                    document.getElementById('error-msg').style.opacity = '1';
-                    setTimeout(() => {
-                        passInput.classList.remove('shake');
-                        passInput.value = '';
-                    }, 500);
+        document.querySelectorAll('.key-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.getAttribute('data-key');
+                
+                if (key === 'CLR') {
+                    currentCode = "";
+                } else if (key === 'ENT') {
+                    checkCode();
+                } else if (currentCode.length < 4) {
+                    currentCode += key;
                 }
-            } else {
-                document.getElementById('error-msg').style.opacity = '0';
-            }
+                
+                updateDisplay();
+                if (currentCode.length === 4 && key !== 'ENT') {
+                    // Auto-submit if needed, but let's wait for ENT for more "intentional" UX
+                }
+            });
         });
 
+        function updateDisplay() {
+            keyDisplay.innerText = currentCode.padEnd(4, '_').replace(/./g, (c, i) => i < currentCode.length ? '*' : '_');
+        }
+
+        function checkCode() {
+            if (currentCode === '9999') {
+                isWarping = true;
+                warpStartTime = Date.now();
+                document.body.classList.add('warping');
+                keypadWrapper.style.opacity = '0';
+                setTimeout(() => keypadWrapper.style.display = 'none', 500);
+            } else {
+                keypadWrapper.classList.add('shake');
+                document.getElementById('error-msg').style.opacity = '1';
+                setTimeout(() => {
+                    keypadWrapper.classList.remove('shake');
+                    currentCode = "";
+                    updateDisplay();
+                }, 500);
+            }
+        }
+
+        // Glitch Logic
+        const logo = document.getElementById('logo-aether');
+        const humanImg = document.querySelector('.human-image');
+
+        [logo, humanImg].forEach(el => {
+            el.addEventListener('mouseenter', () => el.classList.add('glitch-active'));
+            el.addEventListener('mouseleave', () => el.classList.remove('glitch-active'));
+        });
+
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                logo.classList.add('glitch-active');
+                setTimeout(() => logo.classList.remove('glitch-active'), 150);
+            }
+        }, 2000);
+
+        // HUD Interaction & Parallax
+        const hudOverlay = document.getElementById('hud-overlay');
+        const mousePosDisplay = document.getElementById('mouse-pos');
+        const uptimeDisplay = document.getElementById('uptime-display');
+        let startTimeHUD = Date.now();
+
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            hudOverlay.style.transform = `translate(${-x}px, ${-y}px)`;
+            mousePosDisplay.innerText = `MOUSE: ${e.clientX}, ${e.clientY}`;
+        });
+
+        setInterval(() => {
+            const up = Math.floor((Date.now() - startTimeHUD) / 1000);
+            uptimeDisplay.innerText = `UPLINK: ACTIVE | T+${up}s`;
+        }, 1000);
+
+        // Resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
