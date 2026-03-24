@@ -92,7 +92,6 @@
             mix-blend-mode: screen; /* Perfect for solid black backgrounds */
             mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-            animation: floatHuman 8s ease-in-out infinite alternate;
         }
 
         .logo {
@@ -240,17 +239,6 @@
             border-radius: 1rem;
         }
 
-        .laser-line {
-            position: absolute;
-            top: -10%; left: 0;
-            width: 100%; height: 50%;
-            background: linear-gradient(to bottom, transparent, rgba(74, 144, 226, 0.1), transparent);
-            border-bottom: 2px solid var(--primary-blue);
-            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.5);
-            animation: laserScan 3s ease-in-out infinite;
-            display: none;
-        }
-
         @keyframes laserScan {
             0%, 100% { top: -60%; }
             50% { top: 110%; }
@@ -349,16 +337,6 @@
             margin-bottom: 2px;
         }
 
-        .scanning-line {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 2px;
-            background: linear-gradient(to right, transparent, var(--primary-blue), transparent);
-            opacity: 0.2;
-            box-shadow: 0 0 15px var(--primary-blue);
-            animation: scanLoop 8s linear infinite;
-        }
-
         @keyframes scanLoop {
             0% { top: 0; }
             100% { top: 100%; }
@@ -389,7 +367,6 @@
 </head>
 <body class="initial">
     <div id="hud-overlay">
-        <div class="scanning-line"></div>
         <div class="hud-corner">
             <div class="hud-item">
                 <span>SYSTEM: SHERLOG.OS [v3.0.1]</span>
@@ -429,7 +406,7 @@
             <div class="glow-button" id="access-btn">INITIALIZE UPLINK</div>
             
             <div id="keypad-wrapper">
-                <div class="laser-scanner"><div class="laser-line" id="laser"></div></div>
+                <div class="laser-scanner"></div>
                 <div class="keypad-header">
                     <div class="keypad-title">BIOMETRIC AUTHORIZATION</div>
                 </div>
@@ -620,7 +597,6 @@
                 setTimeout(() => {
                     keypadWrapper.style.opacity = '1';
                     keypadWrapper.style.transform = 'translate(-50%, -50%) scale(1)';
-                    laser.style.display = 'block';
                 }, 10);
             }, 300);
         });
