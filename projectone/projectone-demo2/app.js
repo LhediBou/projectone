@@ -118,6 +118,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.tableBody.appendChild(tr);
             });
         }
+
+        // Update City Health
+        const healthStatus = document.getElementById('health-status');
+        const healthContainer = document.getElementById('city-health-container');
+        const criticalCount = data.records.filter(r => r.status === 'CRITICAL').length;
+        const highCount = data.records.filter(r => r.status === 'HIGH').length;
+
+        healthContainer.className = 'city-health'; // Reset
+        if (criticalCount > 0) {
+            healthStatus.textContent = 'STATE: CRITICAL';
+            healthContainer.classList.add('health-critical');
+        } else if (highCount > 2) {
+            healthStatus.textContent = 'STATE: CAUTION';
+            healthContainer.classList.add('health-caution');
+        } else {
+            healthStatus.textContent = 'STATE: OPTIMAL';
+            healthContainer.classList.add('health-optimal');
+        }
     };
 
     const handleRefresh = async () => {
